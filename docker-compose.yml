@@ -1,0 +1,16 @@
+services:
+  crawl:
+    container_name: crawl
+    build: .
+    ports:
+      - "9080:9080"
+    volumes:
+      - ./crawl:/crawl
+    depends_on:
+      - splash
+    
+  splash:
+    container_name: splash
+    image: scrapinghub/splash
+    ports:
+      - "8050:8050"

@@ -1,0 +1,7 @@
+mock
+port-for
+Flask
+pytest
+requests
+bumpversion
+flake8
