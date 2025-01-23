@@ -1,6 +1,6 @@
 # Scrapyrt crawl JS website with splash
 
-# Quickrun
+# Usage
 ```bash
 docker compose up --build
 ```
