@@ -1,4 +1,5 @@
 import scrapy
+from urllib.parse import quote
 
 
 class GoogleSpider(scrapy.Spider):
@@ -17,7 +18,7 @@ class GoogleSpider(scrapy.Spider):
     """
 
     def start_requests(self):
-        url = "https://www.google.com/search?q=site:www.24h.com.vn%20%22mono%22"
+        url = f"https://www.google.com/search?q={quote(self.query)}"
         yield scrapy.Request(url=url, callback=self.parse, meta={
             "splash": {
                 "args": {
