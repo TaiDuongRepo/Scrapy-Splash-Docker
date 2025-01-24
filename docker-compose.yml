@@ -5,7 +5,7 @@ services:
     ports:
       - "9080:9080"
     volumes:
-      - ./crawl:/crawl
+      - ./crawl:/scrapyrt/project
     depends_on:
       - splash
     
