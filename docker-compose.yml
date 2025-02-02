@@ -8,9 +8,17 @@ services:
       - ./crawl:/scrapyrt/project
     depends_on:
       - splash
+    networks:
+      - search-network
     
   splash:
     container_name: splash
     image: scrapinghub/splash
     ports:
       - "8050:8050"
+    networks:
+      - search-network
+
+networks:
+  search-network:
+    external: true

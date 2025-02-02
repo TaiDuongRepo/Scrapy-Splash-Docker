@@ -1,0 +1,11 @@
+version: '3'
+services:
+  client:
+    build: .
+    container_name: client
+    networks:
+      - search-network
+
+networks:
+  search-network:
+    external: true
