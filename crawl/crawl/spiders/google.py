@@ -26,12 +26,29 @@ class GoogleSpider(scrapy.Spider):
                 },
                 # "splash_url": "http://localhost:8050",
                 "endpoint": "execute"
-            }
+            },
+            "current_page": 1
         })
 
     def parse(self, response):
+        current_page = response.meta.get("current_page")
+            
         searchs = response.css("div#search > div > div > div")
         for search in searchs:
             yield {
                 "link": search.css("a::attr(href)").get()
             }
+
+        if current_page < int(self.page):
+            pnnext = response.css("a#pnnext::attr(href)").get()
+            url = f"https://www.google.com{pnnext}"
+            yield scrapy.Request(url=url, callback=self.parse, meta={
+                "splash": {
+                    "args": {
+                        'lua_source': self.script,
+                    },
+                    # "splash_url": "http://localhost:8050",
+                    "endpoint": "execute"
+                },
+                "current_page": current_page + 1
+            })
