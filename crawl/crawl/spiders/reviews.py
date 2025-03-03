@@ -24,3 +24,4 @@ class ReviewsSpider(scrapy.Spider):
                 "rate": len(review.css("span.rating > svg").getall()),
                 "text": review.css("p.text::text").get()
             }
+    
