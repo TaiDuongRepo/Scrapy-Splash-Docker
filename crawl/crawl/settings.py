@@ -4,7 +4,6 @@ SPIDER_MODULES = ["crawl.spiders"]
 NEWSPIDER_MODULE = "crawl.spiders"
 
 
-# Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
 
