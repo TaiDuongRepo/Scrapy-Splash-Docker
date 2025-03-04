@@ -2,8 +2,19 @@ import scrapy
 from urllib.parse import quote
 from datetime import datetime
 from urllib.parse import urlparse
+'''
 
-
+# Giờ qua
+https://www.google.com/search?q={quote(self.query)}&source=lnt&tbs=qdr:h&sa=X&ved=2ahUKEwiXy7SJze-LAxVjsVYBHae2ABcQpwV6BAgEEAw&biw=1536&bih=730&dpr=1.25
+# 24h qua
+https://www.google.com/search?q={quote(self.query)}&source=lnt&tbs=qdr:d&sa=X&ved=2ahUKEwi13_Sdze-LAxXqsFYBHRamNi0QpwV6BAgGEA0&biw=1536&bih=730&dpr=1.25
+# 1 tuần qua
+https://www.google.com/search?q={quote(self.query)}&source=lnt&tbs=qdr:w&sa=X&ved=2ahUKEwjiipnYze-LAxWwrVYBHQ_VHOgQpwV6BAgCEA4&biw=1536&bih=730&dpr=1.25
+# 1 tháng qua
+https://www.google.com/search?q={quote(self.query)}&source=lnt&tbs=qdr:m&sa=X&ved=2ahUKEwjGs_nxze-LAxWIglYBHT0AHG0QpwV6BAgFEA8&biw=1536&bih=730&dpr=1.25
+# 1 năm qua
+https://www.google.com/search?q={quote(self.query)}&source=lnt&tbs=qdr:y&sa=X&ved=2ahUKEwjpmKSEzu-LAxW0r1YBHTtPNb4QpwV6BAgFEBA&biw=1536&bih=730&dpr=1.25
+'''
 class GoogleSpider(scrapy.Spider):
     name = "google"
     custom_settings = {
@@ -25,10 +36,20 @@ class GoogleSpider(scrapy.Spider):
         return splash:html()
     end
     """
-
     def start_requests(self):
-        url =f"https://www.google.com/search?q={quote(self.query)}&tbs=cdr%3A1%2Ccd_min%3A2024%2Ccd_max%3A&tbm="
-        print("*******", url)
+        time_filters = {
+            "hour": "qdr:h",
+            "day": "qdr:d",
+            "week": "qdr:w",
+            "month": "qdr:m",
+            "year": "qdr:y",
+        }
+        tbs_param = time_filters.get(self.time_range, "qdr:d")
+
+        # url =f"https://www.google.com/search?q={quote(self.query)}&tbs=cdr%3A1%2Ccd_min%3A2024%2Ccd_max%3A&tbm="
+        url = f"https://www.google.com/search?q={quote(self.query)}&tbs={tbs_param}&tbm="
+
+    
         yield scrapy.Request(url=url, callback=self.parse, meta={
             "splash": {
                 "args": {
