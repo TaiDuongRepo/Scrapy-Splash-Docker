@@ -6,15 +6,16 @@ from urllib.parse import urlparse
 
 class GoogleSpider(scrapy.Spider):
     name = "google"
-    # allowed_domains = ["google.com"]
     custom_settings = {
         "ROBOTSTXT_OBEY": False,
-        "FEED_FORMAT": "json",  # Xuất ra file JSON
-        "FEED_ENCODING": "utf-8",  # Đảm bảo mã hóa UTF-8
-        "CONCURRENT_REQUESTS": 16,  # Tăng số yêu cầu đồng thời
-        "CONCURRENT_REQUESTS_PER_DOMAIN": 8,  # Yêu cầu đồng thời cho mỗi domain
-        "CONCURRENT_REQUESTS_PER_IP": 8,  # Yêu cầu đồng thời cho mỗi IP
-        "DOWNLOAD_DELAY": 0.25,  # Giảm độ trễ giữa các yêu cầu
+        "FEED_FORMAT": "json",  
+        "FEED_ENCODING": "utf-8",  
+        "CONCURRENT_REQUESTS": 16,  
+        "CONCURRENT_REQUESTS_PER_DOMAIN": 8,  
+        "CONCURRENT_REQUESTS_PER_IP": 8,  
+        "DOWNLOAD_DELAY": 0.25,  
+        'crawl.middlewares.ProxyMiddleware': 100,  
+
     }
 
     script = """
@@ -54,13 +55,9 @@ class GoogleSpider(scrapy.Spider):
                 parsed_url = urlparse(link)
                 domain = parsed_url.netloc
 
-                # Chỉ lấy kết quả không phải từ Google
                 if "google.com" not in domain:
-                    # yield scrapy.Request(url=link, callback=self.parse_detail_nguoinoitieng, meta={'source': source})
-                    # thêm 1 callback để dành cho trang web khác parese_detail
                     yield scrapy.Request(url=link, callback=self.parse_detail, meta={'source': source})
 
-        # Tiếp tục crawl các trang tiếp theo nếu có
         if current_page < int(self.page):
             pnnext = response.css("a#pnnext::attr(href)").get()
             if pnnext:
@@ -75,7 +72,9 @@ class GoogleSpider(scrapy.Spider):
                     "current_page": current_page + 1
                 })
 
-    
+    '''
+    crawl4ai
+    '''
     def parse_detail(self, response):
         source = response.meta.get("source")
         title = response.css("h1::text").get()

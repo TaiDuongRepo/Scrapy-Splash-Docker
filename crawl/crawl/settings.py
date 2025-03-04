@@ -1,17 +1,14 @@
 BOT_NAME = "crawl"
 
 SPIDER_MODULES = ["crawl.spiders"]
-NEWSPIDER_MODULE = "crawl.spiders"
 
 
 ROBOTSTXT_OBEY = True
 
 
-# Set settings whose default value is deprecated to a future-proof value
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
-# Splash settings
 SPLASH_URL = 'http://splash:8050'
 
 DOWNLOADER_MIDDLEWARES = {

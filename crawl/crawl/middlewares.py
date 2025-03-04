@@ -125,54 +125,34 @@
 
 # middlewares.py
 
-from scrapy import signals
-from scrapy.downloadermiddlewares.httpproxy import HttpProxyMiddleware
-from w3lib.http import basic_auth_header
+
 
 from scrapy import signals
 from scrapy.downloadermiddlewares.httpproxy import HttpProxyMiddleware
 from w3lib.http import basic_auth_header
 
-from scrapy import signals
-from scrapy.downloadermiddlewares.httpproxy import HttpProxyMiddleware
-from w3lib.http import basic_auth_header
 
 class ProxyMiddleware(HttpProxyMiddleware):
-    def __init__(self, auth_encoding='utf-8', proxy=None):
-        """
-        Constructor có tham số `proxy` để cấu hình proxy.
+    def __init__(self, auth_encoding='utf-8'):
+        self.proxy_user = 'sp08-26'
+        self.proxy_password = 'FNPYO'
+        self.proxy_url = 'sp08-26.proxy.mkvn.net'
+        self.proxy_port = '17116'
+        self.proxy_scheme = 'http'
+        
+        self.proxy_auth = basic_auth_header(self.proxy_user, self.proxy_password)
+        
+        self.proxy = f"{self.proxy_scheme}://{self.proxy_url}:{self.proxy_port}"
 
-        - `auth_encoding`: Mã hóa xác thực (mặc định là utf-8).
-        - `proxy`: Địa chỉ proxy, nếu không truyền vào sẽ sử dụng giá trị mặc định.
-        """
-        # Nếu không có proxy được truyền vào, dùng giá trị mặc định
-        self.proxy = proxy or 'sp08-26.proxy.mkvn.net:17116:sp08-17116:FNPYO'
-
-        # Phân tách proxy thành các thành phần
-        proxy_parts = self.proxy.split(":")
-        self.proxy_domain = proxy_parts[0]  # sp08-13.proxy.mkvn.net
-        self.proxy_port = proxy_parts[1]    # 15051
-        self.proxy_user = proxy_parts[2]    # sp08-15051
-        self.proxy_pass = proxy_parts[3]    # GRNHS
-
-        # Tạo proxy authentication
-        self.proxy_auth = basic_auth_header(self.proxy_user, self.proxy_pass)
-
-        # Tạo URL cho proxy
-        self.proxy_url = f"http://{self.proxy_domain}:{self.proxy_port}"
-
-        # Khởi tạo middleware, không cần truyền auth_encoding nếu không cần
         super().__init__(auth_encoding)
 
     def process_request(self, request, spider):
-        # Đặt proxy vào meta và thêm header cho proxy authentication
-        request.meta['proxy'] = self.proxy_url
+        request.meta['proxy'] = self.proxy
         request.headers['Proxy-Authorization'] = self.proxy_auth
         super().process_request(request, spider)
 
 
 class CrawlSpiderMiddleware:
-    # Các phương thức cần thiết cho spider middleware
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -198,7 +178,6 @@ class CrawlSpiderMiddleware:
         spider.logger.info("Spider opened: %s" % spider.name)
 
 class CrawlDownloaderMiddleware:
-    # Các phương thức cần thiết cho downloader middleware
 
     @classmethod
     def from_crawler(cls, crawler):
