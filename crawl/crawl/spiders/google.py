@@ -66,13 +66,14 @@ class GoogleSpider(scrapy.Spider):
 
     def parse(self, response):
         current_page = response.meta.get("current_page")
-        searchs = response.css("div > div > div > div > div > span > a")
-        
+        # searchs = response.css("div > div > div > div > div > span > a")
+        searchs = response.css("#rso > div > div > div")
+
         for search in searchs:
             link = search.css("::attr(href)").get()
             source = search.css("::text").get()
             # published_at get  span.LEwnzc.Sqrs4e
-            published_at = search.css("span.LEwnzc.Sqrs4e::text").get()
+            published_at = search.css("span.LEwnzc.Sqrs4e span::text").get()
 
             if link:
                 parsed_url = urlparse(link)
@@ -103,8 +104,8 @@ class GoogleSpider(scrapy.Spider):
     '''
     def parse_detail(self, response):
         source = response.meta.get("source")
-        title = response.css("h1::text").get()
-
+        title = response.css("h1::text").get() 
+        published_at = response.meta.get("published_at")
         # Lấy thời gian cào hiện tại tính trên máy không phải thẻ trang web
         crawl_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")        
 
@@ -116,7 +117,9 @@ class GoogleSpider(scrapy.Spider):
             "title": title,
             "url": response.url ,
             "crawl_at": crawl_at,
-            "website": website, 
+            "website": website,
+            "published_at": published_at
+
         }
         
     

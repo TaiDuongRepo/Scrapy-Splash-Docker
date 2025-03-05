@@ -62,6 +62,7 @@ def search_google(
             "elapsed_time_seconds": elapsed_time,  # Thời gian cào dữ liệu
             "items_count": items_count,  # Số link lấy được
             "data": items  # Danh sách bài viết
+            
         }
     else:
         return {
