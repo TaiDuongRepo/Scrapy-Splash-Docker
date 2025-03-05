@@ -10,7 +10,18 @@ services:
       - splash
     networks:
       - search-network
-    
+  
+  fastapi:
+    container_name: api_core_search_gg
+    build:
+      context: .
+      dockerfile: Dockerfile.fastapi
+    ports:
+      - "8001:8000"
+    depends_on:
+      - crawl
+    networks:
+      - search-network
   splash:
     container_name: splash
     image: scrapinghub/splash

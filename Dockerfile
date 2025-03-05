@@ -24,3 +24,4 @@ WORKDIR /scrapyrt/project
 ENTRYPOINT ["scrapyrt", "-i", "0.0.0.0"]
 
 EXPOSE 9080
+
