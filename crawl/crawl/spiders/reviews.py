@@ -1,8 +1,8 @@
 import scrapy
 
 
-class ReviewsSpider(scrapy.Spider):
-    name = "reviews"
+class GoogleNewsSpiders(scrapy.Spider):
+    name = "googlenews"
     
     def start_requests(self):
         url = "https://web-scraping.dev/testimonials"
@@ -24,3 +24,4 @@ class ReviewsSpider(scrapy.Spider):
                 "rate": len(review.css("span.rating > svg").getall()),
                 "text": review.css("p.text::text").get()
             }
+    
