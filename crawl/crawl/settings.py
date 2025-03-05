@@ -4,6 +4,7 @@ SPIDER_MODULES = ["crawl.spiders"]
 
 
 ROBOTSTXT_OBEY = True
+# ROBOTSTXT_OBEY = False
 
 
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"

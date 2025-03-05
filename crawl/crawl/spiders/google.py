@@ -1,3 +1,4 @@
+
 import scrapy
 from urllib.parse import quote
 from datetime import datetime
@@ -65,19 +66,23 @@ class GoogleSpider(scrapy.Spider):
 
     def parse(self, response):
         current_page = response.meta.get("current_page")
-
         searchs = response.css("div > div > div > div > div > span > a")
-
+        
         for search in searchs:
             link = search.css("::attr(href)").get()
             source = search.css("::text").get()
+            # published_at get  span.LEwnzc.Sqrs4e
+            published_at = search.css("span.LEwnzc.Sqrs4e::text").get()
 
             if link:
                 parsed_url = urlparse(link)
                 domain = parsed_url.netloc
 
                 if "google.com" not in domain:
-                    yield scrapy.Request(url=link, callback=self.parse_detail, meta={'source': source})
+                    yield scrapy.Request(url=link, callback=self.parse_detail, meta={
+                                        'source': source, 
+                                        'published_at': published_at
+                                    })
 
         if current_page < int(self.page):
             pnnext = response.css("a#pnnext::attr(href)").get()
@@ -99,31 +104,19 @@ class GoogleSpider(scrapy.Spider):
     def parse_detail(self, response):
         source = response.meta.get("source")
         title = response.css("h1::text").get()
-        # get author header > div > span
-        author = response.css("header > div > span::text").get()
-        # get published_date header > div > date
-        published_date = response.css("header > div > date::text").get().strip().replace("\n",' ')
-        
+
         # Lấy thời gian cào hiện tại tính trên máy không phải thẻ trang web
         crawl_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")        
-        # get description  div.right-content > div.main-post
-        description =  " ".join(response.css("article *::text").getall()).strip()
-        description = " ".join(description.split())
+
         parsed_url = urlparse(response.url)
         website = parsed_url.netloc  # Ví dụ: "motcuocsong.vn"
-        article_id = response.css("article::attr(id)").get()
 
         yield {
             'source': source,
             "title": title,
             "url": response.url ,
-            "author": author,
-            "published_date": published_date,
             "crawl_at": crawl_at,
-            "description": description,
             "website": website, 
-            "article_id": article_id
-
         }
         
     
